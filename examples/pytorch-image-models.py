@@ -1,20 +1,16 @@
 import torch
 import torch.nn as nn
-from torchsummary import summary
+from torchinfo import summary
 
 import timm
 
 
 class FeatureNet(nn.Module):
-
     def __init__(self, backbone_name, num_classes, embedding_size=16):
 
         super(FeatureNet, self).__init__()
 
-        backbone = timm.create_model(
-            backbone_name,
-            num_classes
-        )
+        backbone = timm.create_model(backbone_name, num_classes)
 
         backbone.forward_features()
 
@@ -34,19 +30,13 @@ class FeatureNet(nn.Module):
 
         return y
 
-    
-
 
 class ClasifyNet(nn.Module):
-
     def __init__(self, backbone_name, num_classes, embedding_size=16):
 
         super(ClasifyNet, self).__init__()
 
-        backbone = timm.create_model(
-            backbone_name,
-            num_classes
-        )
+        backbone = timm.create_model(backbone_name, num_classes)
 
         try:
             feature_dim = backbone.classifier.in_features
@@ -65,7 +55,7 @@ class ClasifyNet(nn.Module):
         return y
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     print(timm.list_models())
 
@@ -81,9 +71,8 @@ if __name__ == '__main__':
         in_chans=3,
     )
 
-
     x = torch.randn(1, 3, 224, 224)
     y = net(x)
     print(torch.argmax(y))
 
-    summary(net, (3, 224, 224), batch_size=1, device="cpu")
+    summary(net, input_size=(1, 3, 224, 224))

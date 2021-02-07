@@ -2,11 +2,10 @@ import torch
 import torch.nn as nn
 from torchvision import models
 
-from torchsummary import summary
+from torchinfo import summary
 
 
 class ClasifyResNet(nn.Module):
-
     def __init__(self, num_classes):
         super(ClasifyResNet, self).__init__()
         resnet = models.resnet18(pretrained=True)
@@ -24,12 +23,11 @@ class ClasifyResNet(nn.Module):
         return y
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     net = ClasifyResNet(num_classes=10)
 
     x = torch.randn(1, 3, 224, 224)
     y = net(x)
     print(torch.argmax(y))
-
-#    summary(net, (3, 224, 224), batch_size=1, device="cpu")
+    summary(net, input_size=(1, 3, 224, 224))

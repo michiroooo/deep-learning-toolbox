@@ -6,3 +6,4 @@ pytorch-toolbelt
 albumentations
 torch
 torchvision
+torchinfo
