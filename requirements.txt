@@ -1,0 +1,9 @@
+catalyst
+timm
+pytorch-lightning
+pytorch-metric-learning
+pytorch-toolbelt
+albumentations
+torch
+torchvision
+torchinfo
