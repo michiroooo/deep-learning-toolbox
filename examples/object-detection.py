@@ -15,8 +15,8 @@ class ResnetFPN(nn.Module):
         self.backbone = resnet_fpn_backbone(
             backbone_name=backbone_name,
             pretrained=True,
-            trainable_layers=3,
-            returned_layers=[1],
+            trainable_layers=5,
+            # returned_layers=[1],
         )
 
         # try:
@@ -36,44 +36,50 @@ if __name__ == "__main__":
 
     num_classes = 13
 
-    model = ResnetFPN(
+    backbone = ResnetFPN(
         backbone_name="resnet50",
     )
 
-    x = torch.randn(9, 3, 224, 224)
-    y = model(x)
+    summary(backbone, input_size=(9, 3, 448, 448), device="cpu", verbose=2)
 
-    for k, v in y.items():
+    #    model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained=True)
+    model = torchvision.models.detection.retinanet_resnet50_fpn(pretrained=True)
 
-        # from pprint import pprint
+    summary(model, input_size=(1, 3, 224, 224), device="cpu", verbose=2)
 
-        print(k, v.shape)
+    # num_classes = 2  # 1 class (person) + background
+    # in_features = model.roi_heads.box_predictor.cls_score.in_features
+    # model.roi_heads.box_predictor = (
+    #     torchvision.models.detection.faster_rcnn.FastRCNNPredictor(
+    #         in_features, num_classes
+    #     )
+    # )
 
-    backbone = torchvision.models.resnet50(pretrained=True)
-    backbone.out_channels = 2048
+    # # backbone = torchvision.models.mobilenet_v2(pretrained=True).features
+    # # backbone.out_channels = 1280
 
-    summary(backbone, input_size=(9, 3, 224, 224), device="cpu", verbose=2)
+    # # #    summary(backbone, input_size=(9, 3, 224, 224), device="cpu", verbose=2)
 
-    anchor_generator = torchvision.models.detection.rpn.AnchorGenerator(
-        sizes=((32, 64, 128, 256, 512),), aspect_ratios=((0.5, 1.0, 2.0),)
-    )
-    roi_pooler = torchvision.ops.MultiScaleRoIAlign(
-        featmap_names=[0], output_size=7, sampling_ratio=2
-    )
+    # # anchor_generator = torchvision.models.detection.rpn.AnchorGenerator(
+    # #     sizes=((32, 64, 128, 256, 512),), aspect_ratios=((0.5, 1.0, 2.0),)
+    # # )
+    # # roi_pooler = torchvision.ops.MultiScaleRoIAlign(
+    # #     featmap_names=[0], output_size=56, sampling_ratio=2
+    # # )
 
-    model = torchvision.models.detection.FasterRCNN(
-        backbone=backbone,
-        num_classes=num_classes,
-        rpn_anchor_generator=anchor_generator,
-        box_roi_pool=roi_pooler,
-    )
+    # # model = torchvision.models.detection.FasterRCNN(
+    # #     backbone=backbone,
+    # #     num_classes=num_classes,
+    # #     rpn_anchor_generator=anchor_generator,
+    # #     box_roi_pool=roi_pooler,
+    # # )
 
-    in_features = model.roi_heads.box_predictor.cls_score.in_feature
-    model.roi_heads.box_predictor = (
-        torchvision.models.detection.faster_rcnn.FastRCNNPredictor(
-            in_features, num_classes
-        )
-    )
+    # in_features = model.roi_heads.box_predictor.cls_score.in_features
+    # model.roi_heads.box_predictor = (
+    #     torchvision.models.detection.faster_rcnn.FastRCNNPredictor(
+    #         in_features, num_classes
+    #     )
+    # )
 
     # in_features_mask = model.roi_heads.mask_predictor.conv5_mask.in_channels
     # hidden_layer = 256
@@ -81,12 +87,13 @@ if __name__ == "__main__":
     #     in_features_mask, hidden_layer, num_classes
     # )
 
-    model.eval()
-    x = [torch.rand(3, 300, 400), torch.rand(3, 400, 400)]
-    predictions = model(x)
-
-    for k, v in predictions.items():
-
-        print(k.v)
+    # model.eval()
 
     # summary(model, input_size=(2, 3, 224, 224), device="cpu", verbose=2)
+
+    # x = [torch.rand(3, 300, 400), torch.rand(3, 400, 400)]
+    # predictions = model(x)
+
+    # for k, v in predictions.items():
+
+    #     print(k.v)
