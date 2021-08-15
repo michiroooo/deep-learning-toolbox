@@ -1,8 +1,7 @@
 catalyst
 timm
 pytorch-lightning
-pytorch-metric-learning
-pytorch-toolbelt
+lightning-bolts
 albumentations
 torch
 torchvision
